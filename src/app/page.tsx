@@ -1,103 +1,144 @@
+'use client';
+
+import RouteCard from "@/components/RouteCard";
+import { useState, useEffect } from 'react';
 import Image from "next/image";
 
-export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+// Define marker type and colors (should match the definition in add-route/page.tsx)
+type MarkerType = 'start' | 'regular' | 'finish' | 'feet only';
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+const markerColors: Record<MarkerType, string> = {
+  'start': 'border-green-600', // Green border for start
+  'regular': 'border-blue-500', // Blue border for regular
+  'finish': 'border-red-600', // Red border for finish
+  'feet only': 'border-yellow-500', // Yellow border for feet only
+};
+
+interface Marker {
+  x: number;
+  y: number;
+  type: MarkerType; // Update marker interface
+}
+
+interface Route {
+  id: string;
+  name: string;
+  grade: string;
+  description?: string;
+  markers: Marker[]; // Update markers type
+  image: string;
+}
+
+export default function Home() {
+  const [routes, setRoutes] = useState<Route[]>([]);
+  const [selectedRoute, setSelectedRoute] = useState<Route | null>(null);
+
+  useEffect(() => {
+    const fetchRoutes = async () => {
+      try {
+        const response = await fetch('/api/routes');
+        if (response.ok) {
+          const data: Route[] = await response.json();
+          setRoutes(data);
+        } else {
+          console.error('Error fetching routes:', response.statusText);
+        }
+      } catch (error) {
+        console.error('Error fetching routes:', error);
+      }
+    };
+
+    fetchRoutes();
+  }, []);
+
+  const handleEdit = (id: string) => {
+    console.log("Edit route:", id);
+    // TODO: Implement edit functionality
+  };
+
+  const handleDelete = (id: string) => {
+    console.log("Delete route:", id);
+    // TODO: Implement delete functionality
+  };
+
+  const handleRouteClick = (route: Route) => {
+    setSelectedRoute(route);
+  };
+
+  const handleCloseDetails = () => {
+    setSelectedRoute(null);
+  };
+
+  return (
+    <div className="container mx-auto px-4 py-8">
+      <header className="mb-8">
+        <h1 className="text-3xl sm:text-4xl font-bold text-gray-900">Spray Wall Routes</h1>
+        <p className="mt-2 text-gray-600">Track and manage your climbing routes</p>
+      </header>
+
+      {!selectedRoute ? (
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <RouteCard
+            isNew
+            name="New Route"
+            grade=""
+            description="Add a new route to your spray wall"
+            href="/add-route"
+          />
+          
+          {routes.map(route => (
+            <RouteCard
+              key={route.id}
+              id={route.id}
+              name={route.name}
+              grade={route.grade}
+              description={route.description || 'No description provided.'}
+              onClick={() => handleRouteClick(route)}
+              onEdit={() => handleEdit(route.id)}
+              onDelete={() => handleDelete(route.id)}
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+          ))}
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      ) : (
+        <div className="mt-8">
+          <h2 className="text-2xl font-semibold text-gray-900 mb-4">{selectedRoute.name}</h2>
+          <p className="text-gray-600 mb-4">Grade: {selectedRoute.grade}</p>
+          <p className="text-gray-600 mb-4">{selectedRoute.description}</p>
+
+          {selectedRoute.image && selectedRoute.markers && (
+            <div className="relative w-full max-w-2xl mx-auto mb-4">
+              <Image
+                src={selectedRoute.image}
+                alt="Spray Wall Route"
+                width={600}
+                height={800}
+                layout="responsive"
+              />
+              {selectedRoute.markers.map((marker, index) => (
+                <div
+                  key={index}
+                  className={`absolute border-4 rounded-full bg-transparent ${markerColors[marker.type]}`}
+                  style={{
+                    left: `${marker.x * 100}%`,
+                    top: `${marker.y * 100}%`,
+                    width: '20px',
+                    height: '20px',
+                    transform: 'translate(-50%, -50%)',
+                    boxShadow: '0 0 0 2px black',
+                  }}
+                ></div>
+              ))}
+            </div>
+          )}
+
+          <button
+            className="mt-4 rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+            onClick={handleCloseDetails}
+          >
+            Back to Routes
+          </button>
+        </div>
+      )}
     </div>
   );
 }
