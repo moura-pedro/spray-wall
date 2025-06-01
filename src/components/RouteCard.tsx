@@ -1,6 +1,5 @@
 'use client';
 
-import Image from "next/image";
 
 interface RouteCardProps {
   id?: string;
@@ -22,17 +21,12 @@ interface RouteCardProps {
 }
 
 export default function RouteCard({
-  id,
   name,
   grade,
   gradeColor,
   description,
   isNew = false,
-  onEdit,
-  onDelete,
   href,
-  image,
-  markers,
   onClick,
   setterName,
   style,

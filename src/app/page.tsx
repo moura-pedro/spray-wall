@@ -3,7 +3,7 @@
 import RouteCard from "@/components/RouteCard";
 import { useState, useEffect } from 'react';
 import Image from "next/image";
-import { Range, getTrackBackground } from 'react-range'; // Import Range and getTrackBackground
+import { Range } from 'react-range'; // Import Range and getTrackBackground
 
 // Define marker type and colors (should match the definition in add-route/page.tsx)
 type MarkerType = 'start' | 'regular' | 'finish' | 'feet only';
