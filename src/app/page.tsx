@@ -31,6 +31,7 @@ interface Route {
   instagram?: string; // Add instagram to interface
   markers: Marker[];
   image: string;
+  createdAt: string; // Add createdAt field
 }
 
 export default function Home() {
@@ -93,7 +94,7 @@ export default function Home() {
         <>
           {/* Grade Range Slider Filter */}
           <div className="mb-8">
-            <label className="block text-sm font-medium text-gray-400 mb-2">Filter by Grade Range: V{gradeRange[0]} - V{gradeRange[1]}</label>
+            <label className="flex justify-center block text-sm font-medium text-gray-400 mb-2">Filter by Grade Range: V{gradeRange[0]} - V{gradeRange[1]}</label>
             <div className="flex justify-center items-center w-full max-w-xs mx-auto">
               <Range
                 values={gradeRange}
@@ -154,6 +155,7 @@ export default function Home() {
                 setterName={route.setterName}
                 style={route.style}
                 instagram={route.instagram}
+                createdAt={route.createdAt}
                 onClick={() => handleRouteClick(route)}
                 onEdit={() => handleEdit(route.id)}
                 onDelete={() => handleDelete(route.id)}
@@ -183,6 +185,7 @@ export default function Home() {
               </a>
             </p>
           )}
+          <p className="text-gray-400 mb-2">Created: {selectedRoute.createdAt ? new Date(selectedRoute.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : 'N/A'}</p>
           <p className="text-gray-400 mb-4">{selectedRoute.description}</p>
 
           {selectedRoute.image && selectedRoute.markers && (

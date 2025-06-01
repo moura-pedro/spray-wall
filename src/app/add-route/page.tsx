@@ -211,7 +211,7 @@ export default function AddRoutePage() {
         ))}
       </div>
 
-      <div className="mt-8">
+      <div className="mt-8 max-w-md mx-auto">
         <h2 className="text-2xl font-semibold text-gray-100 mb-4">Route Details</h2>
         <div className="flex flex-col gap-4">
           <div>
@@ -254,8 +254,7 @@ export default function AddRoutePage() {
                 <button
                   key={style}
                   className={`px-4 py-2 rounded-md text-sm font-medium ${
-                    selectedStyles.includes(style) ? 'bg-blue-600 text-white' : 'bg-700 text-gray-100'
-                  }`}
+                    selectedStyles.includes(style) ? 'bg-blue-600 text-white' : 'bg-gray-500 text-gray-100'}`}
                   onClick={() => handleStyleChange(style)}
                 >
                   {style.charAt(0).toUpperCase() + style.slice(1)}

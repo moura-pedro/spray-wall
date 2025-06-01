@@ -21,8 +21,18 @@ export async function GET() {
     await dbConnect(); // Connect to the database
 
     const routes = await Route.find({}); // Fetch all routes
+    
+    // Transform the routes to ensure dates are properly formatted
+    const formattedRoutes = routes.map(route => {
+      const routeObj = route.toObject();
+      return {
+        ...routeObj,
+        createdAt: routeObj.createdAt ? new Date(routeObj.createdAt).toISOString() : new Date().toISOString(),
+        updatedAt: routeObj.updatedAt ? new Date(routeObj.updatedAt).toISOString() : new Date().toISOString()
+      };
+    });
 
-    return NextResponse.json(routes);
+    return NextResponse.json(formattedRoutes);
   } catch (error) {
     console.error('Error fetching routes:', error);
     return NextResponse.json({ message: 'Error fetching routes' }, { status: 500 });

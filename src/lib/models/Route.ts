@@ -19,6 +19,8 @@ const RouteSchema = new mongoose.Schema({
   markers: [MarkerSchema], // Array of MarkerSchema
   image: { type: String, required: true },
   instagram: { type: String }, // Add instagram field
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now },
 });
 
 // Check if the model already exists before defining it
