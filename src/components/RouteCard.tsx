@@ -6,6 +6,7 @@ interface RouteCardProps {
   id?: string;
   name: string;
   grade: string;
+  gradeColor?: string;
   description: string;
   isNew?: boolean;
   onEdit?: () => void;
@@ -24,6 +25,7 @@ export default function RouteCard({
   id,
   name,
   grade,
+  gradeColor,
   description,
   isNew = false,
   onEdit,
@@ -59,7 +61,7 @@ export default function RouteCard({
     <div className="rounded-lg border bg-white p-4 md:p-6 shadow-sm flex flex-col h-full cursor-pointer text-gray-900" onClick={onClick}>
       <div className="flex items-center justify-between mb-1">
         <h2 className="text-lg md:text-xl font-semibold text-gray-900">{name}</h2>
-        <span className="rounded-full bg-green-100 px-2 py-0.5 text-xs md:text-sm font-medium text-green-800 text-gray-900">
+        <span className={`rounded-full ${gradeColor || 'bg-gray-100'} px-2 py-0.5 text-xs md:text-sm font-bold text-gray-900`}>
           {grade}
         </span>
       </div>

@@ -15,6 +15,36 @@ const markerColors: Record<MarkerType, string> = {
   'feet only': 'border-yellow-500', // Adjusted yellow color for contrast
 };
 
+// Define V grade colors from easiest to hardest
+const gradeColors: Record<string, string> = {
+  // V1-V2: Grey
+  'V1': 'bg-gray-200',
+  'V2': 'bg-gray-400',
+  // V3-V4: Pink
+  'V3': 'bg-pink-200',
+  'V4': 'bg-pink-400',
+  // V5-V6: Yellow
+  'V5': 'bg-yellow-200',
+  'V6': 'bg-yellow-400',
+  // V7-V8: Blue
+  'V7': 'bg-blue-200',
+  'V8': 'bg-blue-400',
+  // V9-V10: Orange
+  'V9': 'bg-orange-200',
+  'V10': 'bg-orange-400',
+  // V11-V12: Green
+  'V11': 'bg-emerald-200',
+  'V12': 'bg-emerald-400',
+  // V13-V14: Red
+  'V13': 'bg-red-200',
+  'V14': 'bg-red-400',
+  // V15-V16: Purple
+  'V15': 'bg-purple-200',
+  'V16': 'bg-purple-400',
+  // V17: Black
+  'V17': 'bg-gray-800',
+};
+
 interface Marker {
   x: number;
   y: number;
@@ -187,6 +217,7 @@ export default function Home() {
                 id={route.id}
                 name={route.name}
                 grade={route.grade}
+                gradeColor={gradeColors[route.grade]}
                 description={route.description || ''}
                 setterName={route.setterName}
                 style={route.style}
