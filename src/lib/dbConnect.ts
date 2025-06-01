@@ -16,6 +16,7 @@ interface CachedMongoose {
 
 // Extend the global interface to add the mongoose property
 declare global {
+  // eslint-disable-next-line no-var
   var mongoose: CachedMongoose;
 }
 
