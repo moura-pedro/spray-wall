@@ -57,21 +57,6 @@ export default function RouteCard({
       </div>
 
       <p className="mt-2 text-gray-600 flex-grow">{description}</p>
-      
-      <div className="mt-4 flex gap-2" onClick={(e) => e.stopPropagation()}>
-        <button
-          onClick={onEdit}
-          className="rounded-md bg-gray-100 px-3 py-1 text-sm text-gray-700 hover:bg-gray-200"
-        >
-          Edit
-        </button>
-        <button
-          onClick={onDelete}
-          className="rounded-md bg-red-100 px-3 py-1 text-sm text-red-700 hover:bg-red-200"
-        >
-          Delete
-        </button>
-      </div>
     </div>
   );
 } 

@@ -1,7 +1,7 @@
 'use client';
 
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useRouter } from 'next/navigation';
 
 // Define marker type and colors
@@ -21,14 +21,20 @@ const markerColors: Record<MarkerType, string> = {
 };
 
 export default function AddRoutePage() {
-  const [markers, setMarkers] = useState<Marker[]>([]); // Update state type
+  const [markers, setMarkers] = useState<Marker[]>([]);
   const [routeName, setRouteName] = useState('');
   const [routeGrade, setRouteGrade] = useState('V1');
-  const [selectedMarkerType, setSelectedMarkerType] = useState<MarkerType>('regular'); // State for selected type
+  const [selectedMarkerType, setSelectedMarkerType] = useState<MarkerType>('regular');
+  const [draggingIndex, setDraggingIndex] = useState<number | null>(null);
+  const [dragOffset, setDragOffset] = useState<{ x: number; y: number } | null>(null);
+  const [isDragging, setIsDragging] = useState(false); // Flag to indicate if dragging occurred
+  const imageRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
   const handleImageClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    const image = e.target as HTMLImageElement;
+    if (draggingIndex !== null) return; // Prevent adding marker while dragging
+
+    const image = imageRef.current as HTMLDivElement;
     const rect = image.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
@@ -40,6 +46,64 @@ export default function AddRoutePage() {
     // Add marker with selected type
     setMarkers([...markers, { x: relativeX, y: relativeY, type: selectedMarkerType }]);
   };
+
+  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>, index: number) => {
+    e.stopPropagation(); // Prevent image click handler
+    setDraggingIndex(index);
+    setIsDragging(false); // Reset dragging flag
+    const marker = markers[index];
+    const image = imageRef.current as HTMLDivElement;
+    const rect = image.getBoundingClientRect();
+    // Calculate offset relative to the marker's position
+    const offsetX = e.clientX - (rect.left + marker.x * rect.width);
+    const offsetY = e.clientY - (rect.top + marker.y * rect.height);
+    setDragOffset({ x: offsetX, y: offsetY });
+  };
+
+  const handleMouseMove = (e: MouseEvent) => {
+    if (draggingIndex === null || dragOffset === null) return;
+
+    setIsDragging(true); // Set dragging flag
+
+    const image = imageRef.current as HTMLDivElement;
+    const rect = image.getBoundingClientRect();
+
+    // Calculate new position relative to the image container
+    const newX = e.clientX - rect.left - dragOffset.x;
+    const newY = e.clientY - rect.top - dragOffset.y;
+
+    // Convert back to relative coordinates
+    const newRelativeX = newX / rect.width;
+    const newRelativeY = newY / rect.height;
+
+    // Update marker position in state
+    setMarkers(markers.map((marker, i) => 
+      i === draggingIndex ? { ...marker, x: newRelativeX, y: newRelativeY } : marker
+    ));
+  };
+
+  const handleMouseUp = () => {
+    setDraggingIndex(null);
+    setDragOffset(null);
+    // isDragging is checked in the onClick handler
+  };
+
+  // Add and remove global mousemove and mouseup listeners
+  useEffect(() => {
+    if (draggingIndex !== null) {
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+    } else {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+    }
+
+    // Cleanup listeners on component unmount
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [draggingIndex]);
 
   const handleSaveRoute = async () => {
     const newRoute = {
@@ -96,7 +160,7 @@ export default function AddRoutePage() {
         </div>
       </div>
 
-      <div className="relative w-full max-w-2xl mx-auto" onClick={handleImageClick}>
+      <div className="relative w-full max-w-2xl mx-auto" ref={imageRef} onClick={handleImageClick}>
         <Image
           src="/spray.jpeg"
           alt="Spray Wall"
@@ -107,14 +171,23 @@ export default function AddRoutePage() {
         {markers.map((marker, index) => (
           <div
             key={index}
-            className={`absolute border-4 rounded-full bg-transparent ${markerColors[marker.type]}`}
+            className={`absolute border-4 rounded-full bg-transparent cursor-pointer ${markerColors[marker.type]}`}
             style={{
               left: `${marker.x * 100}%`,
               top: `${marker.y * 100}%`,
               width: '20px',
               height: '20px',
               transform: 'translate(-50%, -50%)', // Center the marker
-              boxShadow: '0 0 0 2px black', // Add black outline using box-shadow
+              boxShadow: '0 0 0 2px black',
+            }}
+            onMouseDown={(e) => handleMouseDown(e, index)}
+            onClick={(e) => {
+              e.stopPropagation(); // Prevent adding a new marker when clicking an existing one
+              // Delete marker on click (only if not dragging)
+              if (!isDragging) { // Check if not dragging
+                const updatedMarkers = markers.filter((_, i) => i !== index);
+                setMarkers(updatedMarkers);
+              }
             }}
           ></div>
         ))}

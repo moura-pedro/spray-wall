@@ -3,6 +3,7 @@
 import RouteCard from "@/components/RouteCard";
 import { useState, useEffect } from 'react';
 import Image from "next/image";
+import { Range, getTrackBackground } from 'react-range'; // Import Range and getTrackBackground
 
 // Define marker type and colors (should match the definition in add-route/page.tsx)
 type MarkerType = 'start' | 'regular' | 'finish' | 'feet only';
@@ -17,7 +18,7 @@ const markerColors: Record<MarkerType, string> = {
 interface Marker {
   x: number;
   y: number;
-  type: MarkerType; // Update marker interface
+  type: MarkerType;
 }
 
 interface Route {
@@ -25,13 +26,15 @@ interface Route {
   name: string;
   grade: string;
   description?: string;
-  markers: Marker[]; // Update markers type
+  markers: Marker[];
   image: string;
 }
 
 export default function Home() {
   const [routes, setRoutes] = useState<Route[]>([]);
   const [selectedRoute, setSelectedRoute] = useState<Route | null>(null);
+  // Initialize range values to [1, 17] for V1 to V17
+  const [gradeRange, setGradeRange] = useState<number[]>([1, 17]); 
 
   useEffect(() => {
     const fetchRoutes = async () => {
@@ -69,6 +72,12 @@ export default function Home() {
     setSelectedRoute(null);
   };
 
+  // Filter routes based on selected grade range
+  const filteredRoutes = routes.filter(route => {
+    const gradeNumber = parseInt(route.grade.replace('V', ''), 10);
+    return gradeNumber >= gradeRange[0] && gradeNumber <= gradeRange[1];
+  });
+
   return (
     <div className="container mx-auto px-4 py-8">
       <header className="mb-8">
@@ -77,29 +86,77 @@ export default function Home() {
       </header>
 
       {!selectedRoute ? (
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          <RouteCard
-            isNew
-            name="New Route"
-            grade=""
-            description="Add a new route to your spray wall"
-            href="/add-route"
-          />
-          
-          {routes.map(route => (
+        // Display route cards and filter when no route is selected
+        <>
+          {/* Grade Range Slider Filter */}
+          <div className="mb-8">
+            <label className="block text-sm font-medium text-gray-700 mb-2">Filter by Grade Range: V{gradeRange[0]} - V{gradeRange[1]}</label>
+            <div className="flex justify-center items-center w-full max-w-xs mx-auto">
+              <Range
+                values={gradeRange}
+                step={1}
+                min={1}
+                max={17}
+                onChange={(values) => setGradeRange(values)}
+                renderTrack={({ props, children }) => (
+                  <div
+                    {...props}
+                    style={{
+                      ...props.style,
+                      height: '6px',
+                      width: '100%',
+                      backgroundColor: '#ccc',
+                      borderRadius: '3px',
+                    }}
+                  >
+                    {children}
+                  </div>
+                )}
+                renderThumb={({ props }) => (
+                  <div
+                    {...props}
+                    style={{
+                      ...props.style,
+                      height: '24px',
+                      width: '24px',
+                      backgroundColor: '#999',
+                      borderRadius: '50%',
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      boxShadow: '0px 2px 6px #AAA',
+                    }}
+                  />
+                )}
+              />
+            </div>
+          </div>
+
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             <RouteCard
-              key={route.id}
-              id={route.id}
-              name={route.name}
-              grade={route.grade}
-              description={route.description || 'No description provided.'}
-              onClick={() => handleRouteClick(route)}
-              onEdit={() => handleEdit(route.id)}
-              onDelete={() => handleDelete(route.id)}
+              isNew
+              name="New Route"
+              grade=""
+              description="Add a new route to your spray wall"
+              href="/add-route"
             />
-          ))}
-        </div>
+            
+            {filteredRoutes.map(route => (
+              <RouteCard
+                key={route.id}
+                id={route.id}
+                name={route.name}
+                grade={route.grade}
+                description={route.description || 'No description provided.'}
+                onClick={() => handleRouteClick(route)}
+                onEdit={() => handleEdit(route.id)}
+                onDelete={() => handleDelete(route.id)}
+              />
+            ))}
+          </div>
+        </>
       ) : (
+        // Display route details (image with markers) when a route is selected
         <div className="mt-8">
           <h2 className="text-2xl font-semibold text-gray-900 mb-4">{selectedRoute.name}</h2>
           <p className="text-gray-600 mb-4">Grade: {selectedRoute.grade}</p>
@@ -123,7 +180,7 @@ export default function Home() {
                     top: `${marker.y * 100}%`,
                     width: '20px',
                     height: '20px',
-                    transform: 'translate(-50%, -50%)',
+                    transform: 'translate(-50%, -50%)', // Center the marker
                     boxShadow: '0 0 0 2px black',
                   }}
                 ></div>
