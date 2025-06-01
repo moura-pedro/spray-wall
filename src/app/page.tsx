@@ -38,7 +38,8 @@ export default function Home() {
   const [routes, setRoutes] = useState<Route[]>([]);
   const [selectedRoute, setSelectedRoute] = useState<Route | null>(null);
   // Initialize range values to [1, 17] for V1 to V17
-  const [gradeRange, setGradeRange] = useState<number[]>([1, 17]); 
+  const [gradeRange, setGradeRange] = useState<number[]>([1, 17]);
+  const [sortBy, setSortBy] = useState<'recent' | 'name' | 'difficulty'>('recent');
 
   useEffect(() => {
     const fetchRoutes = async () => {
@@ -82,11 +83,26 @@ export default function Home() {
     return gradeNumber >= gradeRange[0] && gradeNumber <= gradeRange[1];
   });
 
+  // Sort routes based on selected criteria
+  const sortedRoutes = [...filteredRoutes].sort((a, b) => {
+    if (sortBy === 'recent') {
+      // Sort by creation date (newest first)
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+    } else if (sortBy === 'name') {
+      return a.name.localeCompare(b.name);
+    } else {
+      // Sort by difficulty (V grade)
+      const gradeA = parseInt(a.grade.replace('V', ''), 10);
+      const gradeB = parseInt(b.grade.replace('V', ''), 10);
+      return gradeA - gradeB;
+    }
+  });
+
   return (
     <div className="container mx-auto px-4 py-8 text-gray-100">
       <header className="mb-8">
         <h1 className=" flex justify-center text-3xl sm:text-4xl font-bold text-gray-100">Spray Sesh</h1>
-        <p className="flex justify-center mt-2 text-gray-400">Veja as rotas que já foram feitas</p>
+        <p className="flex justify-center mt-2 text-gray-400">Veja as vias que já foram feitas</p>
       </header>
 
       {!selectedRoute ? (
@@ -94,7 +110,7 @@ export default function Home() {
         <>
           {/* Grade Range Slider Filter */}
           <div className="mb-8">
-            <label className="flex justify-center block text-sm font-medium text-gray-400 mb-2">Filter by Grade Range: V{gradeRange[0]} - V{gradeRange[1]}</label>
+            <label className="flex justify-center block text-sm font-medium text-gray-400 mb-2">Filtre por grau: V{gradeRange[0]} - V{gradeRange[1]}</label>
             <div className="flex justify-center items-center w-full max-w-xs mx-auto">
               <Range
                 values={gradeRange}
@@ -136,16 +152,36 @@ export default function Home() {
             </div>
           </div>
 
+          {/* Sort Dropdown */}
+          <div className="mb-8 flex justify-center">
+            <div className="relative">
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value as 'recent' | 'name' | 'difficulty')}
+                className="block appearance-none bg-gray-700 border border-gray-600 text-gray-100 py-2 px-4 pr-8 rounded leading-tight focus:outline-none focus:border-blue-500"
+              >
+                <option value="recent">Mais Recentes</option>
+                <option value="name">Ordem Alfabética</option>
+                <option value="difficulty">Ordem de Dificuldade</option>
+              </select>
+              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-400">
+                <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                  <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             <RouteCard
               isNew
-              name="New Route"
+              name="Nova Via"
               grade=""
-              description="Add a new route to your spray wall"
+              description="Adicione uma nova via ao seu spray wall"
               href="/add-route"
             />
             
-            {filteredRoutes.map(route => (
+            {sortedRoutes.map(route => (
               <RouteCard
                 key={route.id}
                 id={route.id}
@@ -167,10 +203,10 @@ export default function Home() {
         // Display route details (image with markers) when a route is selected
         <div className="mt-8 text-gray-100">
           <h2 className="text-2xl font-semibold text-gray-100 mb-4">{selectedRoute.name}</h2>
-          <p className="text-gray-400 mb-2">Grade: {selectedRoute.grade}</p>
-          {selectedRoute.setterName && <p className="text-gray-400 mb-2">Setter: {selectedRoute.setterName}</p>}
+          <p className="text-gray-400 mb-2">Grau: {selectedRoute.grade}</p>
+          {selectedRoute.setterName && <p className="text-gray-400 mb-2">Montador: {selectedRoute.setterName}</p>}
           {selectedRoute.style && selectedRoute.style.length > 0 && (
-             <p className="text-gray-400 mb-2">Style: {selectedRoute.style.map(s => s.charAt(0).toUpperCase() + s.slice(1)).join(', ')}</p>
+             <p className="text-gray-400 mb-2">Estilo: {selectedRoute.style.map(s => s.charAt(0).toUpperCase() + s.slice(1)).join(', ')}</p>
           )}
            {selectedRoute.instagram && (
             <p className="text-gray-400 mb-2">
@@ -192,7 +228,7 @@ export default function Home() {
             <div className="relative w-full max-w-2xl mx-auto mb-4">
               <Image
                 src={selectedRoute.image}
-                alt="Spray Wall Route"
+                alt="Via no Spray Wall"
                 width={600}
                 height={800}
                 layout="responsive"
@@ -218,7 +254,7 @@ export default function Home() {
             className="mt-4 rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
             onClick={handleCloseDetails}
           >
-            Back to Routes
+            Voltar para Vias
           </button>
         </div>
       )}

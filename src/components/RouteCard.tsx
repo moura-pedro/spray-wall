@@ -40,15 +40,15 @@ export default function RouteCard({
   if (isNew) {
     return (
       <div className="rounded-lg border bg-white p-4 md:p-6 shadow-sm">
-        <h2 className="text-xl font-semibold text-gray-900">New Route</h2>
-        <p className="mt-1 text-gray-600">Add a new route to your spray wall</p>
+        <h2 className="text-xl font-semibold text-gray-900">Nova Via</h2>
+        <p className="mt-1 text-gray-600">Adicione uma nova via ao seu spray wall</p>
         {href ? (
           <a href={href} className="inline-block mt-3 rounded-md bg-blue-600 px-3 py-1 text-white hover:bg-blue-700 text-sm">
-            Add Route
+            Adicionar Via
           </a>
         ) : (
           <button className="mt-3 rounded-md bg-blue-600 px-3 py-1 text-white hover:bg-blue-700 text-sm">
-            Add Route
+            Adicionar Via
           </button>
         )}
       </div>
