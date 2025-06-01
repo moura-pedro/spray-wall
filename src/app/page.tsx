@@ -18,31 +18,31 @@ const markerColors: Record<MarkerType, string> = {
 // Define V grade colors from easiest to hardest
 const gradeColors: Record<string, string> = {
   // V1-V2: Grey
-  'V1': 'bg-gray-200',
-  'V2': 'bg-gray-400',
+  'V1': 'bg-gray-200 text-gray-900',
+  'V2': 'bg-gray-400 text-gray-900',
   // V3-V4: Pink
-  'V3': 'bg-pink-200',
-  'V4': 'bg-pink-400',
+  'V3': 'bg-pink-200 text-gray-900',
+  'V4': 'bg-pink-400 text-gray-900',
   // V5-V6: Yellow
-  'V5': 'bg-yellow-200',
-  'V6': 'bg-yellow-400',
+  'V5': 'bg-yellow-200 text-gray-900',
+  'V6': 'bg-yellow-400 text-gray-900',
   // V7-V8: Blue
-  'V7': 'bg-blue-200',
-  'V8': 'bg-blue-400',
+  'V7': 'bg-blue-200 text-gray-900',
+  'V8': 'bg-blue-400 text-gray-900',
   // V9-V10: Orange
-  'V9': 'bg-orange-200',
-  'V10': 'bg-orange-400',
+  'V9': 'bg-orange-200 text-gray-900',
+  'V10': 'bg-orange-400 text-gray-900',
   // V11-V12: Green
-  'V11': 'bg-emerald-200',
-  'V12': 'bg-emerald-400',
+  'V11': 'bg-emerald-200 text-gray-900',
+  'V12': 'bg-emerald-400 text-gray-900',
   // V13-V14: Red
-  'V13': 'bg-red-200',
-  'V14': 'bg-red-400',
+  'V13': 'bg-red-200 text-gray-900',
+  'V14': 'bg-red-400 text-gray-900',
   // V15-V16: Purple
-  'V15': 'bg-purple-200',
-  'V16': 'bg-purple-400',
+  'V15': 'bg-purple-200 text-gray-900',
+  'V16': 'bg-purple-400 text-gray-900',
   // V17: Black
-  'V17': 'bg-gray-800',
+  'V17': 'bg-gray-800 text-white',
 };
 
 interface Marker {
@@ -131,13 +131,21 @@ export default function Home() {
   return (
     <div className="container mx-auto px-4 py-8 text-gray-100">
       <header className="mb-8">
-        <h1 className=" flex justify-center text-3xl sm:text-4xl font-bold text-gray-100">Spray Sesh</h1>
+        <div className="flex items-center justify-center gap-4">
+          <Image
+            src="/app_logo.png"
+            alt="Logotipo do Aplicativo Spray Sesh"
+            width={50} // Adjust size as needed
+            height={50} // Adjust size as needed
+          />
+          <h1 className="text-3xl sm:text-4xl font-bold text-gray-100">Spray Sesh</h1>
+        </div>
         <p className="flex justify-center mt-2 text-gray-400">Veja as vias que já foram feitas</p>
       </header>
 
       {!selectedRoute ? (
         // Display route cards and filter when no route is selected
-        <>
+        <div className="pb-20">
           {/* Grade Range Slider Filter */}
           <div className="mb-8">
             <label className="flex justify-center block text-sm font-medium text-gray-400 mb-2">Filtre por grau: V{gradeRange[0]} - V{gradeRange[1]}</label>
@@ -229,10 +237,10 @@ export default function Home() {
               />
             ))}
           </div>
-        </>
+        </div>
       ) : (
         // Display route details (image with markers) when a route is selected
-        <div className="mt-8 text-gray-100">
+        <div className="mt-8 text-gray-100 pb-20">
           <h2 className="text-2xl font-semibold text-gray-100 mb-4">{selectedRoute.name}</h2>
           <p className="text-gray-400 mb-2">Grau: {selectedRoute.grade}</p>
           {selectedRoute.setterName && <p className="text-gray-400 mb-2">Montador: {selectedRoute.setterName}</p>}
@@ -289,6 +297,12 @@ export default function Home() {
           </button>
         </div>
       )}
+
+      <footer className="fixed bottom-0 left-0 w-full bg-gray-900 py-4 text-center text-gray-500 text-sm">
+        <div className="container mx-auto px-4">
+          <p>&copy; {new Date().getFullYear()} Spray Sesh. Feito com 🤍 por <a href="https://www.linkedin.com/in/pedroomour/" target="_blank" rel="noopener noreferrer" className="text-white hover:underline">Pedro Moura</a>.</p>
+        </div>
+      </footer>
     </div>
   );
 }
