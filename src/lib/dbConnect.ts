@@ -8,10 +8,22 @@ if (!MONGODB_URI) {
   );
 }
 
-let cached = (global as any).mongoose;
+// Add a type for the cached mongoose connection
+interface CachedMongoose {
+  conn: mongoose.Connection | null;
+  promise: Promise<typeof mongoose> | null;
+}
+
+// Extend the global interface to add the mongoose property
+declare global {
+  var mongoose: CachedMongoose;
+}
+
+// Let's cache the connection on the global object to avoid issues in development hot-reloading
+let cached = global.mongoose;
 
 if (!cached) {
-  cached = (global as any).mongoose = { conn: null, promise: null };
+  cached = global.mongoose = { conn: null, promise: null };
 }
 
 async function dbConnect() {
@@ -30,7 +42,9 @@ async function dbConnect() {
   }
 
   try {
-    cached.conn = await cached.promise;
+    // Await the promise to get the Mongoose instance, then access the connection
+    const mongooseInstance = await cached.promise;
+    cached.conn = mongooseInstance.connection;
   } catch (e) {
     cached.promise = null;
     throw e;
@@ -39,4 +53,4 @@ async function dbConnect() {
   return cached.conn;
 }
 
-export default dbConnect; 
+export default dbConnect;
