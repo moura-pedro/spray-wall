@@ -14,10 +14,10 @@ interface Marker {
 }
 
 const markerColors: Record<MarkerType, string> = {
-  'start': 'border-green-600', // Green border for start
-  'regular': 'border-blue-500', // Blue border for regular
-  'finish': 'border-red-600', // Red border for finish
-  'feet only': 'border-yellow-500', // Yellow border for feet only
+  'start': 'border-green-500', // Adjusted green color for contrast
+  'regular': 'border-blue-500', // Adjusted blue color for contrast
+  'finish': 'border-red-500', // Adjusted red color for contrast
+  'feet only': 'border-yellow-500', // Adjusted yellow color for contrast
 };
 
 // Define Route Style types
@@ -157,18 +157,18 @@ export default function AddRoutePage() {
   const markerTypes: MarkerType[] = ['start', 'regular', 'finish', 'feet only'];
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-6">Add New Route</h1>
+    <div className="container mx-auto px-4 py-8 text-gray-100">
+      <h1 className="text-2xl sm:text-3xl font-bold text-gray-100 mb-6">Add New Route</h1>
       
       {/* Marker Type Selection */}
       <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700 mb-2">Select Hold Type:</label>
+        <label className="block text-sm font-medium text-gray-400 mb-2">Select Hold Type:</label>
         <div className="flex gap-4">
           {markerTypes.map(type => (
             <button
               key={type}
               className={`px-4 py-2 rounded-md text-sm font-medium ${
-                selectedMarkerType === type ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-800'
+                selectedMarkerType === type ? 'bg-blue-600 text-white' : 'bg-gray-700 text-gray-100'
               }`}
               onClick={() => setSelectedMarkerType(type)}
             >
@@ -212,23 +212,23 @@ export default function AddRoutePage() {
       </div>
 
       <div className="mt-8">
-        <h2 className="text-2xl font-semibold text-gray-900 mb-4">Route Details</h2>
+        <h2 className="text-2xl font-semibold text-gray-100 mb-4">Route Details</h2>
         <div className="flex flex-col gap-4">
           <div>
-            <label htmlFor="routeName" className="block text-sm font-medium text-gray-700">Route Name</label>
+            <label htmlFor="routeName" className="block text-sm font-medium text-gray-400">Route Name</label>
             <input
               type="text"
               id="routeName"
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm text-gray-900"
+              className="mt-1 block w-full rounded-md border-gray-700 bg-gray-800 text-gray-100 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
               value={routeName}
               onChange={(e) => setRouteName(e.target.value)}
             />
           </div>
           <div>
-            <label htmlFor="routeGrade" className="block text-sm font-medium text-gray-700">V Grade</label>
+            <label htmlFor="routeGrade" className="block text-sm font-medium text-gray-400">V Grade</label>
             <select
               id="routeGrade"
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm text-gray-900"
+              className="mt-1 block w-full rounded-md border-gray-700 bg-gray-800 text-gray-100 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
               value={routeGrade}
               onChange={(e) => setRouteGrade(e.target.value)}
             >
@@ -238,23 +238,23 @@ export default function AddRoutePage() {
             </select>
           </div>
           <div>
-            <label htmlFor="setterName" className="block text-sm font-medium text-gray-700">Setter Name</label>
+            <label htmlFor="setterName" className="block text-sm font-medium text-gray-400">Setter Name</label>
             <input
               type="text"
               id="setterName"
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm text-gray-900"
+              className="mt-1 block w-full rounded-md border-gray-700 bg-gray-800 text-gray-100 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
               value={setterName}
               onChange={(e) => setSetterName(e.target.value)}
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Style</label>
+            <label className="block text-sm font-medium text-gray-400 mb-2">Style</label>
             <div className="flex flex-wrap gap-2">
               {routeStyles.map(style => (
                 <button
                   key={style}
                   className={`px-4 py-2 rounded-md text-sm font-medium ${
-                    selectedStyles.includes(style) ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-800'
+                    selectedStyles.includes(style) ? 'bg-blue-600 text-white' : 'bg-700 text-gray-100'
                   }`}
                   onClick={() => handleStyleChange(style)}
                 >
@@ -264,11 +264,11 @@ export default function AddRoutePage() {
             </div>
           </div>
           <div>
-            <label htmlFor="instagramLink" className="block text-sm font-medium text-gray-700">Instagram Username (Optional)</label>
+            <label htmlFor="instagramLink" className="block text-sm font-medium text-gray-400">Instagram Username (Optional)</label>
             <input
               type="text"
               id="instagramLink"
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm text-gray-900"
+              className="mt-1 block w-full rounded-md border-gray-700 bg-gray-800 text-gray-100 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
               value={instagramLink}
               onChange={(e) => setInstagramLink(e.target.value)}
               placeholder="e.g., your_username"
@@ -282,7 +282,7 @@ export default function AddRoutePage() {
               Save Route
             </button>
             <button
-              className="mt-4 rounded-md bg-gray-300 px-4 py-2 text-gray-800 hover:bg-gray-400 flex-grow"
+              className="mt-4 rounded-md bg-gray-700 px-4 py-2 text-gray-100 hover:bg-gray-600 flex-grow"
               onClick={() => router.push('/')}
             >
               Cancel

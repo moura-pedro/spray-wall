@@ -9,10 +9,10 @@ import { Range, getTrackBackground } from 'react-range'; // Import Range and get
 type MarkerType = 'start' | 'regular' | 'finish' | 'feet only';
 
 const markerColors: Record<MarkerType, string> = {
-  'start': 'border-green-600', // Green border for start
-  'regular': 'border-blue-500', // Blue border for regular
-  'finish': 'border-red-600', // Red border for finish
-  'feet only': 'border-yellow-500', // Yellow border for feet only
+  'start': 'border-green-500', // Adjusted green color for contrast
+  'regular': 'border-blue-500', // Adjusted blue color for contrast
+  'finish': 'border-red-500', // Adjusted red color for contrast
+  'feet only': 'border-yellow-500', // Adjusted yellow color for contrast
 };
 
 interface Marker {
@@ -82,10 +82,10 @@ export default function Home() {
   });
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-8 text-gray-100">
       <header className="mb-8">
-        <h1 className="text-3xl sm:text-4xl font-bold text-gray-900">Spray Wall Routes</h1>
-        <p className="mt-2 text-gray-600">Track and manage your climbing routes</p>
+        <h1 className=" flex justify-center text-3xl sm:text-4xl font-bold text-gray-100">Spray Sesh</h1>
+        <p className="flex justify-center mt-2 text-gray-400">Veja as rotas que já foram feitas</p>
       </header>
 
       {!selectedRoute ? (
@@ -93,7 +93,7 @@ export default function Home() {
         <>
           {/* Grade Range Slider Filter */}
           <div className="mb-8">
-            <label className="block text-sm font-medium text-gray-700 mb-2">Filter by Grade Range: V{gradeRange[0]} - V{gradeRange[1]}</label>
+            <label className="block text-sm font-medium text-gray-400 mb-2">Filter by Grade Range: V{gradeRange[0]} - V{gradeRange[1]}</label>
             <div className="flex justify-center items-center w-full max-w-xs mx-auto">
               <Range
                 values={gradeRange}
@@ -108,7 +108,7 @@ export default function Home() {
                       ...props.style,
                       height: '6px',
                       width: '100%',
-                      backgroundColor: '#ccc',
+                      backgroundColor: '#555',
                       borderRadius: '3px',
                     }}
                   >
@@ -122,12 +122,12 @@ export default function Home() {
                       ...props.style,
                       height: '24px',
                       width: '24px',
-                      backgroundColor: '#999',
+                      backgroundColor: '#BBB',
                       borderRadius: '50%',
                       display: 'flex',
                       justifyContent: 'center',
                       alignItems: 'center',
-                      boxShadow: '0px 2px 6px #AAA',
+                      boxShadow: '0px 2px 6px #888',
                     }}
                   />
                 )}
@@ -163,27 +163,27 @@ export default function Home() {
         </>
       ) : (
         // Display route details (image with markers) when a route is selected
-        <div className="mt-8">
-          <h2 className="text-2xl font-semibold text-gray-900 mb-4">{selectedRoute.name}</h2>
-          <p className="text-gray-600 mb-2">Grade: {selectedRoute.grade}</p>
-          {selectedRoute.setterName && <p className="text-gray-600 mb-2">Setter: {selectedRoute.setterName}</p>}
+        <div className="mt-8 text-gray-100">
+          <h2 className="text-2xl font-semibold text-gray-100 mb-4">{selectedRoute.name}</h2>
+          <p className="text-gray-400 mb-2">Grade: {selectedRoute.grade}</p>
+          {selectedRoute.setterName && <p className="text-gray-400 mb-2">Setter: {selectedRoute.setterName}</p>}
           {selectedRoute.style && selectedRoute.style.length > 0 && (
-             <p className="text-gray-600 mb-2">Style: {selectedRoute.style.map(s => s.charAt(0).toUpperCase() + s.slice(1)).join(', ')}</p>
+             <p className="text-gray-400 mb-2">Style: {selectedRoute.style.map(s => s.charAt(0).toUpperCase() + s.slice(1)).join(', ')}</p>
           )}
            {selectedRoute.instagram && (
-            <p className="text-gray-600 mb-2">
+            <p className="text-gray-400 mb-2">
               Instagram: 
               <a 
                 href={`https://www.instagram.com/${selectedRoute.instagram}/`}
                 target="_blank" 
                 rel="noopener noreferrer" 
-                className="text-blue-600 hover:underline ml-1"
+                className="text-blue-400 hover:underline ml-1"
               >
                 @{selectedRoute.instagram}
               </a>
             </p>
           )}
-          <p className="text-gray-600 mb-4">{selectedRoute.description}</p>
+          <p className="text-gray-400 mb-4">{selectedRoute.description}</p>
 
           {selectedRoute.image && selectedRoute.markers && (
             <div className="relative w-full max-w-2xl mx-auto mb-4">
