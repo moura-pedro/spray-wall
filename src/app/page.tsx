@@ -26,6 +26,9 @@ interface Route {
   name: string;
   grade: string;
   description?: string;
+  setterName?: string; // Add setterName to interface
+  style?: string[]; // Update style to be an array
+  instagram?: string; // Add instagram to interface
   markers: Marker[];
   image: string;
 }
@@ -147,7 +150,10 @@ export default function Home() {
                 id={route.id}
                 name={route.name}
                 grade={route.grade}
-                description={route.description || 'No description provided.'}
+                description={route.description || ''}
+                setterName={route.setterName}
+                style={route.style}
+                instagram={route.instagram}
                 onClick={() => handleRouteClick(route)}
                 onEdit={() => handleEdit(route.id)}
                 onDelete={() => handleDelete(route.id)}
@@ -159,7 +165,24 @@ export default function Home() {
         // Display route details (image with markers) when a route is selected
         <div className="mt-8">
           <h2 className="text-2xl font-semibold text-gray-900 mb-4">{selectedRoute.name}</h2>
-          <p className="text-gray-600 mb-4">Grade: {selectedRoute.grade}</p>
+          <p className="text-gray-600 mb-2">Grade: {selectedRoute.grade}</p>
+          {selectedRoute.setterName && <p className="text-gray-600 mb-2">Setter: {selectedRoute.setterName}</p>}
+          {selectedRoute.style && selectedRoute.style.length > 0 && (
+             <p className="text-gray-600 mb-2">Style: {selectedRoute.style.map(s => s.charAt(0).toUpperCase() + s.slice(1)).join(', ')}</p>
+          )}
+           {selectedRoute.instagram && (
+            <p className="text-gray-600 mb-2">
+              Instagram: 
+              <a 
+                href={`https://www.instagram.com/${selectedRoute.instagram}/`}
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="text-blue-600 hover:underline ml-1"
+              >
+                @{selectedRoute.instagram}
+              </a>
+            </p>
+          )}
           <p className="text-gray-600 mb-4">{selectedRoute.description}</p>
 
           {selectedRoute.image && selectedRoute.markers && (
